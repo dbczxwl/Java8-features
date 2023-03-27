@@ -1,13 +1,13 @@
 package org.bochen;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 public class SimpleStream {
     public static void main(String[] args) {
-        System.out.println( "Hello World!" );
+        System.out.println("Hello World!");
         List<Dish> menu = Arrays.asList(
                 new Dish("pork", false, 800, Dish.Type.MEAT),
                 new Dish("beef", false, 700, Dish.Type.MEAT),
@@ -21,6 +21,7 @@ public class SimpleStream {
         );
 
         System.out.println(getDishByCollection(menu));
+        System.out.println(getDishByStream(menu));
     }
 
     public static List<String> getDishByCollection(List<Dish> menu) {
@@ -34,7 +35,7 @@ public class SimpleStream {
         }
 
         //    sort by name
-        Collections.sort(lowCalories,(d1,d2)->Integer.compare(d1.getCalories(),d2.getCalories()));
+        lowCalories.sort(Comparator.comparingInt(Dish::getCalories));
 
         // get name list
         List<String> dishNameList = new ArrayList<>();
@@ -43,6 +44,11 @@ public class SimpleStream {
             dishNameList.add(d.getName());
         }
         return dishNameList;
+    }
+
+    public static List<String> getDishByStream(List<Dish> menu){
+        return menu.stream().filter(d->d.getCalories()<400)
+                .sorted(comparing(Dish::getCalories)).map(Dish::getName).collect(toList());
     }
 
 }
